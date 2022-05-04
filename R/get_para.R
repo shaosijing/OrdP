@@ -26,6 +26,7 @@ get_para<-function(n,numSample,numDays,assess,thresh,autoreg_coeff,crosslag_coef
 
   N = 1:numSample
   days = 1:numDays
+  assess = 1:assess
 
   datt = data.frame(expand.grid(assess,days,N))
   colnames(datt) = c("hour","day","N")
