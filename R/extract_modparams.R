@@ -9,7 +9,7 @@
 
 extract_modparams <- function(result_list, reps) {
   modparams <- matrix()
-  modparams<- foreach::foreach (k=1:reps,.combine='rbind') %do% return(result_list[[k]][[1]])
+  modparams<- foreach::foreach (i=1:reps,.combine='rbind') %do% return(result_list[[i]][[1]])
 
   colnames(modparams) <- c("res", "res2")
 

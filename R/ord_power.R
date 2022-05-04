@@ -28,7 +28,7 @@ ord_power<-function(n,numSample,numDays,assess,thresh,autoreg_coeff,crosslag_coe
 
   parallel::stopCluster(cl)
 
-  out<-extract_modparams(Y)
+  out<-extract_modparams(Y, reps)
   crosslag_est<-out[,1]
   crosslag_p<-out[,2]
 
