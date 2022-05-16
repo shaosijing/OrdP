@@ -2,8 +2,7 @@
 #' This function allows you to simulate longitudinal ordinal data and estimate the parameters with multilevel models for a nubmer of times
 #' @param n number of categories for the ordinal outcome variable
 #' @param numSample number of participants
-#' @param numDays number of days
-#' @param assess four accessments per day
+#' @param numAssess number of assessments per participant
 #' @param thresh thresholds for ordinal outcome
 #' @param autoreg_coeff autoregressive coefficient
 #' @param crosslag_coeff cross-lag coefficient
@@ -16,14 +15,14 @@
 
 
 
-ord_power<-function(n,numSample,numDays,assess,thresh,autoreg_coeff,crosslag_coeff,gamma_00,gamma_00_sd,gamma_01_sd, reps){
+ord_power<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,gamma_00,gamma_00_sd,gamma_01_sd, reps){
   cl <- parallel::makePSOCKcluster(2)
   doParallel::registerDoParallel(cl)
   X <- 1:reps
 
   Y=foreach::foreach(x = X, .packages=c('mnormt','tidyverse','DataCombine','EMAtools',
-                               'ordinal'), .export = c("get_para","extract_modparams")) %dopar% {
-                                 obs<-get_para(n,numSample,numDays,assess,thresh,autoreg_coeff,crosslag_coeff,gamma_00,gamma_00_sd,gamma_01_sd)
+                               'ordinal'), .export = c("get_param","extract_modparams")) %dopar% {
+                                 obs<-get_param(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,gamma_00,gamma_00_sd,gamma_01_sd)
                                }
 
   parallel::stopCluster(cl)

@@ -2,8 +2,7 @@
 #' This function allows you to simulate longitudinal ordinal data and estimate the parameters with multilevel models
 #' @param n number of categories for the ordinal outcome variable
 #' @param numSample number of participants
-#' @param numDays number of days
-#' @param assess four accessments per day
+#' @param numAssess number of assessments
 #' @param thresh thresholds for ordinal outcome
 #' @param autoreg_coeff autoregressive coefficient
 #' @param crosslag_coeff cross-lag coefficient
@@ -13,10 +12,9 @@
 #' @return the estimated cross-lag coefficient and its corresponding p-value
 #' @export
 
-get_para<-function(n,numSample,numDays,assess,thresh,autoreg_coeff,crosslag_coeff,gamma_00,gamma_00_sd, gamma_01_sd){
+get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,gamma_00,gamma_00_sd, gamma_01_sd){
   # numSample: number of participants
-  # numDays: number of EMA days
-  # assess: number of measurements each day (same for everyone)
+  # numAssess: number of total assessments for each participant
   # thresh: thresholds, fixed for everyone
   # autoreg: autoregressive coefficient
   # crosslag: crosslag coefficient
@@ -25,12 +23,10 @@ get_para<-function(n,numSample,numDays,assess,thresh,autoreg_coeff,crosslag_coef
 
 
   N = 1:numSample
-  days = 1:numDays
-  assess = 1:assess
+  assess = 1:numAssess
 
-  datt = data.frame(expand.grid(assess,days,N))
-  colnames(datt) = c("hour","day","N")
-  datt$timepoint = rep(1:(max(days)*length(assess)),length(N))
+  datt = data.frame(expand.grid(assess,N))
+  colnames(datt) = c("assessment","N")
   datt$si_cat = NA
   datt$si_star = NA
   datt$pred = rnorm(nrow(datt))
@@ -56,7 +52,7 @@ get_para<-function(n,numSample,numDays,assess,thresh,autoreg_coeff,crosslag_coef
 
   for(i in 1:nrow(datt)){
 
-    if(datt[i,"timepoint"]==1){
+    if(datt[i,"assessment"]==1){
       count = count + 1
       datt[i,"si_star"] = int[count] + rnorm(1,0,1)
     }else{
@@ -73,7 +69,7 @@ get_para<-function(n,numSample,numDays,assess,thresh,autoreg_coeff,crosslag_coef
   }
 
   datt2 <- DataCombine::slide(datt,Var="si_cat",GroupVar="N",
-                 NewVar="si_cat_lead",slideBy=1,TimeVar="timepoint")
+                 NewVar="si_cat_lead",slideBy=1,TimeVar="assessment")
 
 
 
