@@ -9,20 +9,22 @@
 #' @param gamma_00 fixed intercept
 #' @param gamma_00_sd random intercept
 #' @param gamma_01_sd random autoregressive cofficient
+#' @param gamma_02_sd random cross-lag coefficient sd
+#' @param Compliance compliance rate in percentage
 #' @param reps number of replications
 #' @return the mean of estimated cross-lag coefficient and percentage of significant effects from number of replicated simulations
 #' @export
 
 
 
-ord_power<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,gamma_00,gamma_00_sd,gamma_01_sd, reps){
+ord_power<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,gamma_00,gamma_00_sd,gamma_01_sd,gamma_02_sd,Compliance, reps){
   cl <- parallel::makePSOCKcluster(2)
   doParallel::registerDoParallel(cl)
   X <- 1:reps
 
   Y=foreach::foreach(x = X, .packages=c('mnormt','tidyverse','DataCombine','EMAtools',
                                'ordinal'), .export = c("get_param","extract_modparams")) %dopar% {
-                                 obs<-get_param(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,gamma_00,gamma_00_sd,gamma_01_sd)
+                                 obs<-get_param(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,gamma_00,gamma_00_sd,gamma_01_sd, gamma_02_sd, Compliance)
                                }
 
   parallel::stopCluster(cl)

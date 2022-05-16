@@ -10,10 +10,11 @@
 #' @param gamma_00_sd random intercept
 #' @param gamma_01_sd random autoregressive cofficient sd
 #' @param gamma_02_sd random cross-lag coefficient sd
+#' @param Compliance compliance rate in percentage
 #' @return the estimated cross-lag coefficient and its corresponding p-value
 #' @export
 
-get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,gamma_00,gamma_00_sd, gamma_01_sd){
+get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,gamma_00,gamma_00_sd, gamma_01_sd,gamma_02_sd,Compliance){
 
   N = 1:numSample
   assess = 1:numAssess
@@ -66,15 +67,10 @@ get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,ga
                  NewVar="si_cat_lead",slideBy=1,TimeVar="assessment")
 
 
+  prop.m = 1-Compliance/100  # 7% missingness
+  mcar   = runif(nrow(datt2), min=0, max=1)
+  datt2$si_cat_lead = ifelse(mcar<prop.m, NA, datt2$si_cat_lead)
 
-  # brm_int_sub1 <- brm(si_cat_lead ~ 1+si_cat+pred+(1|N),
-  #                      family = cumulative("probit"), data = datt2,
-  #                     chains = 3, iter = 400, cores = 1)
-
-  # sum=summary(brm_int_sub1)
-  # auto_est_CI_brms<- c(sum$fixed$`l-95% CI`[5],sum$fixed$`u-95% CI`[5])
-
-  # clmm
   datt2$si_cat_lead<-as.factor(datt2$si_cat_lead)
   #datt2$si_cat<-as.factor(datt2$si_cat)
   mod=ordinal::clmm2(si_cat_lead ~ si_cat+pred+(1|N), data = datt2, link = "probit")
