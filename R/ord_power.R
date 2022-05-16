@@ -17,7 +17,7 @@
 
 
 
-ord_power<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,gamma_00,gamma_00_sd,gamma_01_sd,gamma_02_sd,Compliance, reps){
+ord_power<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,gamma_00=1,gamma_00_sd=1,gamma_01_sd=1,gamma_02_sd=1,Compliance=100, reps=100){
   cl <- parallel::makePSOCKcluster(2)
   doParallel::registerDoParallel(cl)
   X <- 1:reps
