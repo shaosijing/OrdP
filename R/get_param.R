@@ -8,19 +8,12 @@
 #' @param crosslag_coeff cross-lag coefficient
 #' @param gamma_00 fixed intercept
 #' @param gamma_00_sd random intercept
-#' @param gamma_01_sd random autoregressive cofficient
+#' @param gamma_01_sd random autoregressive cofficient sd
+#' @param gamma_02_sd random cross-lag coefficient sd
 #' @return the estimated cross-lag coefficient and its corresponding p-value
 #' @export
 
 get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,gamma_00,gamma_00_sd, gamma_01_sd){
-  # numSample: number of participants
-  # numAssess: number of total assessments for each participant
-  # thresh: thresholds, fixed for everyone
-  # autoreg: autoregressive coefficient
-  # crosslag: crosslag coefficient
-  # gamma_00: fixed intercept
-  # gamma_00_sd: random effect for intercept
-
 
   N = 1:numSample
   assess = 1:numAssess
@@ -34,15 +27,16 @@ get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,ga
   # autoreg <- rep(autoreg_coeff,max(N)) #leave out random effect for now
   #int<-  rnorm(numSample,gamma_00,gamma_00_sd)
   #autoreg <- rnorm(max(N),autoreg_coeff, 0.569)
-  crosslag <- rep(crosslag_coeff,max(N))
+  #crosslag <- rep(crosslag_coeff,max(N))
 
   # random intercept and random slope in autoregressive
-  gam <- c(gamma_00, autoreg_coeff)
-  G<-matrix(c(gamma_00_sd,-0.54,-0.54,gamma_01_sd),nrow = 2)
-  uj <- mnormt::rmnorm(max(N), mean = rep(0, 2), varcov = G)
-  betaj <- matrix(gam, nrow = max(N), ncol = 2, byrow = TRUE) + uj
+  gam <- c(gamma_00, autoreg_coeff,crosslag_coeff)
+  G<-matrix(c(gamma_00_sd,-0.54,-0.54,-0.54, gamma_01_sd, -0.54, -0.54,-0.54, gamma_02_sd),nrow = 3)
+  uj <- mnormt::rmnorm(max(N), mean = rep(0, 3), varcov = G)
+  betaj <- matrix(gam, nrow = max(N), ncol = 3, byrow = TRUE) + uj
   int<-betaj[,1]
   autoreg<- betaj[,2]
+  crosslag<-betaj[,3]
 
   count = 0
 
