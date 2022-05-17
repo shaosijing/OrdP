@@ -31,7 +31,7 @@ get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,ga
   #crosslag <- rep(crosslag_coeff,max(N))
 
   # random intercept and random slope in autoregressive
-  gam <- c(gamma_00, autoreg_coeff,crosslag_coeff)
+  #gam <- c(gamma_00, autoreg_coeff,crosslag_coeff)
   if (gamma_02_sd == 0){ # no variablity in cross-lag coefficient
     G<-matrix(c(gamma_00_sd,-0.54,-0.54, gamma_01_sd),nrow = 2)
     gam <- c(gamma_00, autoreg_coeff)
