@@ -32,12 +32,22 @@ get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,ga
 
   # random intercept and random slope in autoregressive
   gam <- c(gamma_00, autoreg_coeff,crosslag_coeff)
-  G<-matrix(c(gamma_00_sd,-0.54,-0.54,-0.54, gamma_01_sd, -0.54, -0.54,-0.54, gamma_02_sd),nrow = 3)
-  uj <- mnormt::rmnorm(max(N), mean = rep(0, 3), varcov = G)
-  betaj <- matrix(gam, nrow = max(N), ncol = 3, byrow = TRUE) + uj
-  int<-betaj[,1]
-  autoreg<- betaj[,2]
-  crosslag<-betaj[,3]
+  if (gamma_02_sd == 0){ # no variablity in cross-lag coefficient
+    G<-matrix(c(gamma_00_sd,-0.54,-0.54, gamma_01_sd),nrow = 2)
+    gam <- c(gamma_00, autoreg_coeff)
+    uj <- mnormt::rmnorm(max(N), mean = rep(0, 2), varcov = G)
+    betaj <- matrix(gam, nrow = max(N), ncol = 2, byrow = TRUE) + uj
+    int<-betaj[,1]
+    autoreg<- betaj[,2]
+    crosslag <- rep(crosslag_coeff,max(N))
+  } else if (gamma_02_sd != 0){
+    G<-matrix(c(gamma_00_sd,-0.54,-0.54,-0.54, gamma_01_sd, -0.54, -0.54,-0.54, gamma_02_sd),nrow = 3)
+    uj <- mnormt::rmnorm(max(N), mean = rep(0, 3), varcov = G)
+    betaj <- matrix(gam, nrow = max(N), ncol = 3, byrow = TRUE) + uj
+    int<-betaj[,1]
+    autoreg<- betaj[,2]
+    crosslag<-betaj[,3]
+  }
 
   count = 0
 
