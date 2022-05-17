@@ -7,15 +7,16 @@
 ord_power(
   n,
   numSample,
-  numDays,
-  assess,
+  numAssess,
   thresh,
   autoreg_coeff,
   crosslag_coeff,
-  gamma_00,
-  gamma_00_sd,
-  gamma_01_sd,
-  reps
+  gamma_00 = 1,
+  gamma_00_sd = 1,
+  gamma_01_sd = 1,
+  gamma_02_sd = 1,
+  Compliance = 100,
+  reps = 100
 )
 }
 \arguments{
@@ -23,9 +24,7 @@ ord_power(
 
 \item{numSample}{number of participants}
 
-\item{numDays}{number of days}
-
-\item{assess}{four accessments per day}
+\item{numAssess}{number of assessments per participant}
 
 \item{thresh}{thresholds for ordinal outcome}
 
@@ -38,6 +37,10 @@ ord_power(
 \item{gamma_00_sd}{random intercept}
 
 \item{gamma_01_sd}{random autoregressive cofficient}
+
+\item{gamma_02_sd}{random cross-lag coefficient sd}
+
+\item{Compliance}{compliance rate in percentage}
 
 \item{reps}{number of replications}
 }

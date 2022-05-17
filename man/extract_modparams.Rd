@@ -4,12 +4,12 @@
 \alias{extract_modparams}
 \title{This function allows you to extract model parameters from the multilevel models}
 \usage{
-extract_modparams(result_list, nreps)
+extract_modparams(result_list, reps)
 }
 \arguments{
 \item{result_list}{results from multilevel models}
 
-\item{nreps}{number of replications}
+\item{reps}{number of replications}
 }
 \value{
 the model parameters
