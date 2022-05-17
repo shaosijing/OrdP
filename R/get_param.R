@@ -74,7 +74,7 @@ get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,ga
   }
 
   datt2 <- DataCombine::slide(datt,Var="si_cat",GroupVar="N",
-                 NewVar="si_cat_lead",slideBy=1,TimeVar="assessment")
+                              NewVar="si_cat_lead",slideBy=1,TimeVar="assessment")
 
 
   prop.m = 1-Compliance/100  # 7% missingness
