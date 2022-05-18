@@ -41,7 +41,7 @@ get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,ga
     autoreg<- betaj[,2]
     crosslag <- rep(crosslag_coeff,max(N))
   } else if (gamma_02_sd != 0){
-    G<-matrix(c(gamma_00_sd,-0.54,-0.54,-0.54, gamma_01_sd, -0.54, -0.54,-0.54, gamma_02_sd),nrow = 3)
+    G<-matrix(c(gamma_00_sd,-0.54,-0.04,-0.54, gamma_01_sd, -0.04, -0.04,-0.04, gamma_02_sd),nrow = 3)
     uj <- mnormt::rmnorm(max(N), mean = rep(0, 3), varcov = G)
     betaj <- matrix(gam, nrow = max(N), ncol = 3, byrow = TRUE) + uj
     int<-betaj[,1]
