@@ -33,7 +33,12 @@ get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,ga
   # random intercept and random slope in autoregressive
   #gam <- c(gamma_00, autoreg_coeff,crosslag_coeff)
   if (gamma_02_sd == 0){ # no variablity in cross-lag coefficient
-    G<-matrix(c(gamma_00_sd,-0.54,-0.54, gamma_01_sd),nrow = 2)
+
+    a<-matrix(c(1,-0.54,-0.54, 1),nrow = 2)
+    stdevs <- c(gamma_00_sd,gamma_01_sd)
+    b <- stdevs %*% t(stdevs)
+    G <- b * a
+
     gam <- c(gamma_00, autoreg_coeff)
     uj <- mnormt::rmnorm(max(N), mean = gam, varcov = G)
    # betaj <- matrix(gam, nrow = max(N), ncol = 2, byrow = TRUE) + uj
@@ -42,7 +47,11 @@ get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,ga
     crosslag <- rep(crosslag_coeff,max(N))
   } else if (gamma_02_sd != 0){
     gam <- c(gamma_00, autoreg_coeff, crosslag_coeff)
-    G<-matrix(c(gamma_00_sd,-0.54,-0.5,-0.54, gamma_01_sd, -0.5, -0.5,-0.5, gamma_02_sd),nrow = 3)
+    a<-matrix(c(gamma_00_sd,-0.54,-0.5,-0.54, gamma_01_sd, -0.5, -0.5,-0.5, gamma_02_sd),nrow = 3)
+    stdevs <- c(gamma_00_sd,gamma_01_sd,gamma_02_sd)
+    b <- stdevs %*% t(stdevs)
+    G <- b * a
+
     uj <- mnormt::rmnorm(max(N), mean = gam, varcov = G)
   #  betaj <- matrix(gam, nrow = max(N), ncol = 3, byrow = TRUE) + uj
     int<-uj[,1]
