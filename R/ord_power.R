@@ -6,6 +6,7 @@
 #' @param thresh thresholds for ordinal outcome
 #' @param autoreg_coeff autoregressive coefficient
 #' @param crosslag_coeff cross-lag coefficient
+#' @param crosslag_sk cross-lag skewness and kuertosis
 #' @param gamma_00 fixed intercept
 #' @param gamma_00_sd random intercept
 #' @param gamma_01_sd random autoregressive cofficient

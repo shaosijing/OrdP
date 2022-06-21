@@ -43,6 +43,8 @@ ord_power(
 \item{Compliance}{compliance rate in percentage}
 
 \item{reps}{number of replications}
+
+\item{crosslag_sk}{cross-lag skewness and kuertosis}
 }
 \value{
 the mean of estimated cross-lag coefficient and percentage of significant effects from number of replicated simulations
