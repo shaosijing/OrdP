@@ -11,6 +11,7 @@ get_param(
   thresh,
   autoreg_coeff,
   crosslag_coeff,
+  crosslag_sk,
   gamma_00,
   gamma_00_sd,
   gamma_01_sd,
@@ -30,6 +31,8 @@ get_param(
 \item{autoreg_coeff}{autoregressive coefficient}
 
 \item{crosslag_coeff}{cross-lag coefficient}
+
+\item{crosslag_sk}{cross-lag skewness and kuertosis}
 
 \item{gamma_00}{fixed intercept}
 
