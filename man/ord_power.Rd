@@ -11,6 +11,7 @@ ord_power(
   thresh,
   autoreg_coeff,
   crosslag_coeff,
+  crosslag_sk,
   gamma_00 = 1,
   gamma_00_sd = 1,
   gamma_01_sd = 1,
@@ -32,6 +33,8 @@ ord_power(
 
 \item{crosslag_coeff}{cross-lag coefficient}
 
+\item{crosslag_sk}{cross-lag skewness and kuertosis}
+
 \item{gamma_00}{fixed intercept}
 
 \item{gamma_00_sd}{random intercept}
@@ -43,8 +46,6 @@ ord_power(
 \item{Compliance}{compliance rate in percentage}
 
 \item{reps}{number of replications}
-
-\item{crosslag_sk}{cross-lag skewness and kuertosis}
 }
 \value{
 the mean of estimated cross-lag coefficient and percentage of significant effects from number of replicated simulations
