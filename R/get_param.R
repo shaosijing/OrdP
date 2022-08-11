@@ -58,7 +58,7 @@ get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,cr
     crosslag <- rep(crosslag_coeff,max(N))
   } else if (gamma_02_sd != 0){
     gam <- c(gamma_00, autoreg_coeff, crosslag_coeff)
-    a<-matrix(c(1,-0.1,-0.1,-0.1, 1, -0.1, -0.1,-0.1, 1),nrow = 3)
+    a<-matrix(c(1,-0.5,0.5,-0.5, 1, -0.5, 0.5,-0.5, 1),nrow = 3)
     stdevs <- c(gamma_00_sd,gamma_01_sd,gamma_02_sd)
     b <- stdevs %*% t(stdevs)
     G <- b * a
@@ -71,7 +71,8 @@ get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,cr
     U = pnorm(Z)
     X = matrix(NA,nrow=max(N),ncol=3)
     #for each latent var, generate a beta marginal using U and given alpha, beta params
-    for(k in 1:m){
+    m = 3
+     for(k in 1:m){
       X[,k] = (qbeta(U[,k],2,5)-2/7)/(sqrt(5/196)) #from chen 2019
       #X[,i] = (qgamma(U[,i],shape=1,scale=.25)-1*.25)/(1*.25^2) #gamma dist but mean 0 var = 1
     }
