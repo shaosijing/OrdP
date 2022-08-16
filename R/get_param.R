@@ -26,15 +26,15 @@ get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,cr
   datt$si_star = NA
   datt$pred = rnorm(nrow(datt))
 
-  if (crosslag_sk == "l"){
-    alpha<-c(4,4,4)
-    beta<-c(4,4,4)
-  } else if (crosslag_sk == "m"){
-    alpha<-c(4,4,4)
-    beta<-c(4,4,24)
-  } else if (crosslag_sk == "h"){
-    alpha<-c(4,4,4)
-    beta<-c(4,4,144)
+  if (crosslag_sk == 1){
+    crosslag_skew = 0
+    crosslag_kurt = 3
+  } else if (crosslag_sk == 2){
+    crosslag_skew = 0.7
+    crosslag_kurt = 3
+  } else if (crosslag_sk == 3){
+    crosslag_skew = 1.5
+    crosslag_kurt = 3
   }
   # autoreg <- rep(autoreg_coeff,max(N)) #leave out random effect for now
   #int<-  rnorm(numSample,gamma_00,gamma_00_sd)
@@ -66,40 +66,9 @@ get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,cr
    # uj <- mnormt::rmnorm(max(N), mean = gam, varcov = G)
   #  betaj <- matrix(gam, nrow = max(N), ncol = 3, byrow = TRUE) + uj
 
-    Z <- mnormt::rmnorm(max(N), mean = gam, varcov = G)
 
-    U = pnorm(Z)
-    X = matrix(NA,nrow=max(N),ncol=3)
-    #for each latent var, generate a beta marginal using U and given alpha, beta params
-    m = 3
-     for(k in 1:m){
-      X[,k] = (qbeta(U[,k],2,5)-2/7)/(sqrt(5/196)) #from chen 2019
-      #X[,i] = (qgamma(U[,i],shape=1,scale=.25)-1*.25)/(1*.25^2) #gamma dist but mean 0 var = 1
-    }
-    copBeta = function(U,alpha,beta){
-      alpha1 = alpha[1];alpha2 = alpha[2];alpha3 = alpha[3]
-      beta1 = beta[1]; beta2 = beta[2]; beta3 = beta[3]
-      X=matrix(NA,nrow=nrow(U),ncol=ncol(U))
-      mn = NULL
-      scl = NULL
-      mn[1] = alpha1/(alpha1+beta1) #mean of beta distribution
-      mn[2] = alpha2/(alpha2+beta2)
-      mn[3] = alpha3/(alpha3+beta3)
-
-
-      scl[1]=sqrt((alpha1*beta1)/((alpha1+beta1)^2*(alpha1+beta1+1))) #sd of beta distribution
-      scl[2]=sqrt((alpha2*beta2)/((alpha2+beta2)^2*(alpha2+beta2+1)))
-      scl[3]=sqrt((alpha3*beta3)/((alpha3+beta3)^2*(alpha3+beta3+1)))
-
-      for(j in 1:ncol(U)){
-        X[,j] = (qbeta(U[,j],alpha[j],beta[j])-mn[j])/scl[j] #could change qbeta if wanted diff marginal
-      }
-
-      return(X)
-    }
-
-    uj<-copBeta(U, alpha, beta) #add skewness and kuertossis only to
-                                #autoregressive and cross-lag parameters
+    uj <- rIG(max(N), sigma = G, skewness = c(0,0, crosslag_skew),
+        excesskurt = c(3,3, crosslag_kurt), reps = 1)[[1]]
 
     int<-uj[,1]
     autoreg<- uj[,2]
