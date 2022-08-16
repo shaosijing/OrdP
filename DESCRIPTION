@@ -9,6 +9,6 @@ Description: More about what it does (maybe more than one line)
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-Imports: DataCombine, mnormt, doParallel,covsim,EMAtools,tidyverse
-Depends: foreach, ordinal
+Imports: DataCombine, mnormt, doParallel,EMAtools,tidyverse
+Depends: foreach, ordinal, covsim
 RoxygenNote: 7.1.2
