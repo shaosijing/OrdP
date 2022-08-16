@@ -13,6 +13,8 @@
 #' @param gamma_02_sd random cross-lag coefficient sd
 #' @param Compliance compliance rate in percentage
 #' @return the estimated cross-lag coefficient and its corresponding p-value
+#' @import covsim
+#' @importFrom covsim
 #' @export
 
 get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00,gamma_00_sd, gamma_01_sd,gamma_02_sd,Compliance){
