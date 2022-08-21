@@ -24,7 +24,7 @@ ord_power<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,cr
   X <- 1:reps
 
   Y=foreach::foreach(x = X, .packages=c('mnormt','tidyverse','DataCombine','EMAtools',
-                               'ordinal'), .export = c("get_param","extract_modparams")) %dopar% {
+                               'ordinal', 'covsim'), .export = c("get_param","extract_modparams")) %dopar% {
                                  obs<-get_param(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00,gamma_00_sd,gamma_01_sd, gamma_02_sd, Compliance)
                                }
 
