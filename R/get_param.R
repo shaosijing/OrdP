@@ -12,11 +12,13 @@
 #' @param gamma_01_sd random autoregressive cofficient sd
 #' @param gamma_02_sd random cross-lag coefficient sd
 #' @param Compliance compliance rate in percentage
+#' @param crosslag_prior prior for crosslag
 #' @return the estimated cross-lag coefficient and its corresponding p-value
 #' @import covsim
+#' @import brms
 #' @export
 
-get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00,gamma_00_sd, gamma_01_sd,gamma_02_sd,Compliance){
+get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00,gamma_00_sd, gamma_01_sd,gamma_02_sd,Compliance,crosslag_prior){
 
   N = 1:numSample
   assess = 1:numAssess
@@ -110,11 +112,41 @@ get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,cr
 
   datt2$si_cat_lead<-as.factor(datt2$si_cat_lead)
   #datt2$si_cat<-as.factor(datt2$si_cat)
+  if (crosslag_prior == 1){
   mod=ordinal::clmm2(si_cat_lead ~ si_cat+pred+(1|N), data = datt2, link = "probit")
-
   sum=summary(mod)
   res<-list(c(sum$coefficients[6,1],sum$coefficients[6,4]))
-  #coefficients[6,1]: est
+
+  } else if (crosslag_prior == 2){
+    datt2$si_cat_lead <-as.ordered(datt2$si_cat_lead)
+    mod = brm(si_cat_lead ~ si_cat+pred+(1|N), data = datt2,family = cumulative("probit", threshold="flexible"))
+    sum=summary(mod)
+    a<-sum$fixed[6,3]
+    b<-sum$fixed[6,4]
+    if (a>0 & b > 0) {
+      res<-list(c(sum$fixed[6,1],0))
+    } else if (a <0 & b<0) {
+      res<-list(c(sum$fixed[6,1],0))
+    } else {res<-list(c(sum$coefficients[6,1],1))}
+
+
+
+     } else if (crosslag_prior ==3){
+
+    datt2$si_cat_lead <-as.ordered(datt2$si_cat_lead)
+    mod = brm(si_cat_lead ~ si_cat+pred+(1|N), data = datt2,family = cumulative("probit", threshold="flexible"),
+              prior = prior(gamma(1,3), class = b))
+    sum=summary(mod)
+    a<-sum$fixed[6,3]
+    b<-sum$fixed[6,4]
+    if (a>0 & b > 0) {
+      res<-list(c(sum$fixed[6,1],0))
+    } else if (a <0 & b<0) {
+      res<-list(c(sum$fixed[6,1],0))
+    } else {res<- list(c(sum$coefficients[6,1],1))}
+  }
+
+#coefficients[6,1]: est
   #coefficients[6,4]: p value
   return(res)
 

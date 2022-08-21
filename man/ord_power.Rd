@@ -17,7 +17,8 @@ ord_power(
   gamma_01_sd = 1,
   gamma_02_sd = 1,
   Compliance = 100,
-  reps = 100
+  reps = 100,
+  crosslag_prior
 )
 }
 \arguments{
@@ -46,6 +47,8 @@ ord_power(
 \item{Compliance}{compliance rate in percentage}
 
 \item{reps}{number of replications}
+
+\item{crosslag_prior}{prior for crosslag}
 }
 \value{
 the mean of estimated cross-lag coefficient and percentage of significant effects from number of replicated simulations

@@ -16,7 +16,8 @@ get_param(
   gamma_00_sd,
   gamma_01_sd,
   gamma_02_sd,
-  Compliance
+  Compliance,
+  crosslag_prior
 )
 }
 \arguments{
@@ -43,6 +44,8 @@ get_param(
 \item{gamma_02_sd}{random cross-lag coefficient sd}
 
 \item{Compliance}{compliance rate in percentage}
+
+\item{crosslag_prior}{prior for crosslag}
 }
 \value{
 the estimated cross-lag coefficient and its corresponding p-value

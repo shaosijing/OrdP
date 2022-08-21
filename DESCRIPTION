@@ -16,6 +16,8 @@ Imports:
     EMAtools,
     tidyverse,
     magrittr,
-    covsim
+    covsim,
+    brms,
+    Matrix
 Depends: foreach, ordinal
 RoxygenNote: 7.1.2
