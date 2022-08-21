@@ -14,8 +14,6 @@
 #' @param Compliance compliance rate in percentage
 #' @param crosslag_prior prior for crosslag
 #' @return the estimated cross-lag coefficient and its corresponding p-value
-#' @import covsim
-#' @import brms
 #' @export
 
 get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00,gamma_00_sd, gamma_01_sd,gamma_02_sd,Compliance,crosslag_prior){

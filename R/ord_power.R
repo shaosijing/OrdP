@@ -15,19 +15,18 @@
 #' @param reps number of replications
 #' @param crosslag_prior prior for crosslag
 #' @return the mean of estimated cross-lag coefficient and percentage of significant effects from number of replicated simulations
-#' @import tidyverse
-#' @import Matrix
 #' @export
 
 
 
 ord_power<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00=1,gamma_00_sd=1,gamma_01_sd=1,gamma_02_sd=1,Compliance=100, reps=100, crosslag_prior){
-  cl <- parallel::makePSOCKcluster(2)
+
+   cl <- parallel::makePSOCKcluster(2)
   doParallel::registerDoParallel(cl)
   X <- 1:reps
 
   Y=foreach::foreach(x = X, .packages=c('mnormt','tidyverse','DataCombine','EMAtools',
-                               'ordinal', 'covsim', 'brms'), .export = c("get_param","extract_modparams")) %dopar% {
+                               'ordinal', 'covsim', 'brms', 'Matrix','rstan','dbplyr','Rcpp'), .export = c("get_param","extract_modparams")) %dopar% {
                                  obs<-get_param(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00,gamma_00_sd,gamma_01_sd, gamma_02_sd, Compliance,crosslag_prior)
                                }
 

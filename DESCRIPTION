@@ -14,10 +14,10 @@ Imports:
     mnormt,
     doParallel,
     EMAtools,
-    tidyverse,
     magrittr,
     covsim,
     brms,
-    Matrix
-Depends: foreach, ordinal
+    Matrix,
+    tidyverse
+Depends: foreach, ordinal,Rcpp,rstan,dbplyr
 RoxygenNote: 7.1.2
