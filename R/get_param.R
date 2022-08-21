@@ -110,8 +110,8 @@ get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,cr
 
   datt2$si_cat_lead<-as.factor(datt2$si_cat_lead)
   #datt2$si_cat<-as.factor(datt2$si_cat)
-  t=try(ordinal::clmm2(si_cat_lead ~ si_cat+pred+(1|N), data = datt2, link = "probit"))
-  if ("try-error" %in% class(t)) {res<-list(NA,NA)} else {
+  mod=try(ordinal::clmm2(si_cat_lead ~ si_cat+pred+(1|N), data = datt2, link = "probit"))
+  if ("try-error" %in% class(mod)) {res<-list(NA,NA)} else {
   sum=summary(mod)
   res<-list(c(sum$coefficients[6,1],sum$coefficients[6,4]))}
   #coefficients[6,1]: est
