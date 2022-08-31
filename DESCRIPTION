@@ -18,6 +18,7 @@ Imports:
     covsim,
     brms,
     Matrix,
-    tidyverse
+    tidyverse,
+    Brobdingnag
 Depends: foreach, ordinal,Rcpp,rstan,dbplyr
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1

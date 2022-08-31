@@ -15,11 +15,21 @@
 #' @param reps number of replications
 #' @param crosslag_prior prior for crosslag
 #' @return the mean of estimated cross-lag coefficient and percentage of significant effects from number of replicated simulations
+#' @import EMAtools
+#' @import Rcpp
+#' @import Matrix
+#' @import brms
+#' @import tidyverse
+#' @import dbplyr
+#' @import ordinal
+#' @import rstan
+#' @import Brobdingnag
+#' @importFrom stats rnorm runif
 #' @export
 
 
 
-ord_power<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00=1,gamma_00_sd=1,gamma_01_sd=1,gamma_02_sd=1,Compliance=100, reps=100, crosslag_prior){
+ord_power<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00=1,gamma_00_sd=1,gamma_01_sd=1,gamma_02_sd=1,Compliance=100, reps=50, crosslag_prior){
 
    cl <- parallel::makePSOCKcluster(2)
   doParallel::registerDoParallel(cl)
