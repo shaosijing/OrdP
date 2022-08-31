@@ -17,7 +17,7 @@ ord_power(
   gamma_01_sd = 1,
   gamma_02_sd = 1,
   Compliance = 100,
-  reps = 100,
+  reps = 50,
   crosslag_prior
 )
 }
