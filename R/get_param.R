@@ -110,22 +110,24 @@ get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,cr
 
   datt2$si_cat_lead<-as.factor(datt2$si_cat_lead)
   #datt2$si_cat<-as.factor(datt2$si_cat)
+
+  thresh_length = length(table(datt2))
   if (crosslag_prior == 1){
   mod=ordinal::clmm2(si_cat_lead ~ si_cat+pred+(1|N), data = datt2, link = "probit")
   sum=summary(mod)
-  res<-list(c(sum$coefficients[6,1],sum$coefficients[6,4]))
+  res<-list(c(sum$coefficients[thresh_length+1,1],sum$coefficients[thresh_length+1,4]))
 
   } else if (crosslag_prior == 2){
     datt2$si_cat_lead <-as.ordered(datt2$si_cat_lead)
     mod = brm(si_cat_lead ~ si_cat+pred+(1|N), data = datt2,family = cumulative("probit", threshold="flexible"))
     sum=summary(mod)
-    a<-sum$fixed[6,3]
-    b<-sum$fixed[6,4]
+    a<-sum$fixed[thresh_length+1,3]
+    b<-sum$fixed[thresh_length+1,4]
     if (a>0 & b > 0) {
-      res<-list(c(sum$fixed[6,1],0))
+      res<-list(c(sum$fixed[thresh_length+1,1],0))
     } else if (a <0 & b<0) {
-      res<-list(c(sum$fixed[6,1],0))
-    } else {res<-list(c(sum$coefficients[6,1],1))}
+      res<-list(c(sum$fixed[thresh_length+1,1],0))
+    } else {res<-list(c(sum$coefficients[thresh_length+1,1],1))}
 
      }
 
