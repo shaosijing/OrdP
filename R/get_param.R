@@ -111,7 +111,7 @@ get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,cr
   datt2$si_cat_lead<-as.factor(datt2$si_cat_lead)
   #datt2$si_cat<-as.factor(datt2$si_cat)
 
-  thresh_length = length(table(datt2))
+  thresh_length = length(table(datt2$si_cat_lead))
   if (crosslag_prior == 1){
   mod=try(ordinal::clmm2(si_cat_lead ~ si_cat+pred+(1|N), data = datt2, link = "probit"))
   sum=summary(mod)
