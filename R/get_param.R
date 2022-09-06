@@ -73,7 +73,7 @@ get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,cr
 
     int<-uj[,1]
     autoreg<- uj[,2]
-    crosslag<-uj[,3]
+    crosslag<-uj[,3] + crosslag_coeff
   }
 
   count = 0
