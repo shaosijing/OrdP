@@ -48,7 +48,7 @@ ord_power<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,cr
 
   crosslag = round(mean(crosslag_est),2)
   count<- sum(crosslag_p<0.05)
-  perc<-round(count/reps,2)
+  perc<-round(count/nrow(out),2)
   res<-list(crosslag,perc)
   return(res)
 }
