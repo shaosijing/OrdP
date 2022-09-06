@@ -127,7 +127,7 @@ get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,cr
       res<-list(c(sum$fixed[thresh_length+1,1],0))
     } else if (a <0 & b<0) {
       res<-list(c(sum$fixed[thresh_length+1,1],0))
-    } else {res<-list(c(sum$coefficients[thresh_length+1,1],1))}
+    } else {res<-list(c(sum$fixed[thresh_length+1,1],1))}
 
      }
 
