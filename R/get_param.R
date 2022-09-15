@@ -13,6 +13,7 @@
 #' @param gamma_02_sd random cross-lag coefficient sd
 #' @param Compliance compliance rate in percentage
 #' @param crosslag_prior prior for crosslag
+#' @param thresh_CON condition for thresholds: normal or skewed
 #' @return the estimated cross-lag coefficient and its corresponding p-value
 #' @export
 
@@ -36,6 +37,12 @@ get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,cr
   } else if (crosslag_sk == 3){
     crosslag_skew = 1.5
     crosslag_kurt = 3
+  }
+
+  if (thresh_CON == 1){ #normal
+    thresh = c(-1.5, -1, 1, 1.5)
+  } else if (thresh_CON == 2){ #skewed
+    thresh = c(0,1,2,3)
   }
   # autoreg <- rep(autoreg_coeff,max(N)) #leave out random effect for now
   #int<-  rnorm(numSample,gamma_00,gamma_00_sd)
