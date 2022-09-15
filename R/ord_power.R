@@ -15,6 +15,7 @@
 #' @param reps number of replications
 #' @param crosslag_prior prior for crosslag
 #' @param ar_sk ar skewness and kuertosis
+#' @param corr correlation between random ar and random crosslag
 #' @return the mean of estimated cross-lag coefficient and percentage of significant effects from number of replicated simulations
 #' @import EMAtools
 #' @import Rcpp
@@ -30,7 +31,7 @@
 
 
 
-ord_power<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00=1,gamma_00_sd=1,gamma_01_sd=1,gamma_02_sd=1,Compliance=100, reps=50, crosslag_prior, ar_sk){
+ord_power<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00=1,gamma_00_sd=1,gamma_01_sd=1,gamma_02_sd=1,Compliance=100, reps=50, crosslag_prior, ar_sk,corr){
 
    cl <- parallel::makePSOCKcluster(2)
   doParallel::registerDoParallel(cl)
@@ -38,7 +39,7 @@ ord_power<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coef
 
   Y=foreach::foreach(x = X, .packages=c('mnormt','tidyverse','DataCombine','EMAtools',
                                'ordinal', 'covsim', 'brms', 'Matrix','rstan','dbplyr','Rcpp'), .export = c("get_param","extract_modparams")) %dopar% {
-                                 obs<-get_param(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00,gamma_00_sd,gamma_01_sd, gamma_02_sd, Compliance,crosslag_prior,ar_sk)
+                                 obs<-get_param(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00,gamma_00_sd,gamma_01_sd, gamma_02_sd, Compliance,crosslag_prior,ar_sk,corr)
                                }
 
   parallel::stopCluster(cl)
@@ -48,8 +49,11 @@ ord_power<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coef
   crosslag_p<-out[,2]
 
   crosslag = round(mean(crosslag_est),2)
-  count<- sum(crosslag_p<0.05)
-  perc<-round(count/nrow(out),2)
-  res<-list(crosslag,perc, nrow(out))
+  count1<- sum(crosslag_p<0.05)
+  perc_sig<-round(count1/nrow(out),2)
+
+  count2<- sum(crosslag_p>=0.05)
+  perc_notsig<-round(count2/nrow(out),2)
+  res<-list(crosslag,perc_sig, perc_notsig, nrow(out))
   return(res)
 }

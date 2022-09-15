@@ -18,7 +18,8 @@ get_param(
   gamma_02_sd,
   Compliance,
   crosslag_prior,
-  ar_sk
+  ar_sk,
+  corr
 )
 }
 \arguments{
@@ -49,6 +50,8 @@ get_param(
 \item{crosslag_prior}{prior for crosslag}
 
 \item{ar_sk}{ar skewness and kuertosis}
+
+\item{corr}{correlation between random ar and random crosslag}
 }
 \value{
 the estimated cross-lag coefficient and its corresponding p-value

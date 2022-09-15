@@ -14,10 +14,11 @@
 #' @param Compliance compliance rate in percentage
 #' @param crosslag_prior prior for crosslag
 #' @param ar_sk ar skewness and kuertosis
+#' @param corr correlation between random ar and random crosslag
 #' @return the estimated cross-lag coefficient and its corresponding p-value
 #' @export
 
-get_param<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00,gamma_00_sd, gamma_01_sd,gamma_02_sd,Compliance,crosslag_prior,ar_sk){
+get_param<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00,gamma_00_sd, gamma_01_sd,gamma_02_sd,Compliance,crosslag_prior,ar_sk, corr){
 
   N = 1:numSample
   assess = 1:numAssess
@@ -77,7 +78,12 @@ get_param<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coef
     crosslag <- rep(crosslag_coeff,max(N))
   } else if (gamma_02_sd != 0){
     gam <- c(gamma_00, autoreg_coeff, crosslag_coeff)
+
+    if (corr ==1 ){
     a<-matrix(c(1,-0.5,0.5,-0.5, 1, -0.5, 0.5,-0.5, 1),nrow = 3)
+    } else if (corr ==2){
+    a<-matrix(c(1,0,0,0, 1, 0, 0, 0, 1),nrow = 3)
+    }
     stdevs <- c(gamma_00_sd,gamma_01_sd,gamma_02_sd)
     b <- stdevs %*% t(stdevs)
     G <- b * a
