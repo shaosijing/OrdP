@@ -29,7 +29,7 @@
 
 
 
-ord_power<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00=1,gamma_00_sd=1,gamma_01_sd=1,gamma_02_sd=1,Compliance=100, reps=50, crosslag_prior){
+ord_power<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00=1,gamma_00_sd=1,gamma_01_sd=1,gamma_02_sd=1,Compliance=100, reps=50, crosslag_prior,thresh){
 
    cl <- parallel::makePSOCKcluster(2)
   doParallel::registerDoParallel(cl)
@@ -37,7 +37,7 @@ ord_power<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,cr
 
   Y=foreach::foreach(x = X, .packages=c('mnormt','tidyverse','DataCombine','EMAtools',
                                'ordinal', 'covsim', 'brms', 'Matrix','rstan','dbplyr','Rcpp'), .export = c("get_param","extract_modparams")) %dopar% {
-                                 obs<-get_param(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00,gamma_00_sd,gamma_01_sd, gamma_02_sd, Compliance,crosslag_prior)
+                                 obs<-get_param(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00,gamma_00_sd,gamma_01_sd, gamma_02_sd, Compliance,crosslag_prior,thresh)
                                }
 
   parallel::stopCluster(cl)
