@@ -8,7 +8,7 @@ ord_power(
   n,
   numSample,
   numAssess,
-  thresh,
+  thresh_CON,
   autoreg_coeff,
   crosslag_coeff,
   crosslag_sk,
@@ -18,7 +18,8 @@ ord_power(
   gamma_02_sd = 1,
   Compliance = 100,
   reps = 50,
-  crosslag_prior
+  crosslag_prior,
+  ar_sk
 )
 }
 \arguments{
@@ -28,7 +29,7 @@ ord_power(
 
 \item{numAssess}{number of assessments per participant}
 
-\item{thresh}{thresholds for ordinal outcome}
+\item{thresh_CON}{condition for thresholds: normal or skewed}
 
 \item{autoreg_coeff}{autoregressive coefficient}
 
@@ -49,6 +50,8 @@ ord_power(
 \item{reps}{number of replications}
 
 \item{crosslag_prior}{prior for crosslag}
+
+\item{ar_sk}{ar skewness and kuertosis}
 }
 \value{
 the mean of estimated cross-lag coefficient and percentage of significant effects from number of replicated simulations

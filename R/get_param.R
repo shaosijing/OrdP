@@ -3,7 +3,7 @@
 #' @param n number of categories for the ordinal outcome variable
 #' @param numSample number of participants
 #' @param numAssess number of assessments
-#' @param thresh thresholds for ordinal outcome
+#' @param thresh_CON condition for thresholds: normal or skewed
 #' @param autoreg_coeff autoregressive coefficient
 #' @param crosslag_coeff cross-lag coefficient
 #' @param crosslag_sk cross-lag skewness and kuertosis
@@ -13,11 +13,11 @@
 #' @param gamma_02_sd random cross-lag coefficient sd
 #' @param Compliance compliance rate in percentage
 #' @param crosslag_prior prior for crosslag
-#' @param thresh_CON condition for thresholds: normal or skewed
+#' @param ar_sk ar skewness and kuertosis
 #' @return the estimated cross-lag coefficient and its corresponding p-value
 #' @export
 
-get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00,gamma_00_sd, gamma_01_sd,gamma_02_sd,Compliance,crosslag_prior){
+get_param<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00,gamma_00_sd, gamma_01_sd,gamma_02_sd,Compliance,crosslag_prior,ar_sk){
 
   N = 1:numSample
   assess = 1:numAssess
@@ -37,6 +37,17 @@ get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,cr
   } else if (crosslag_sk == 3){
     crosslag_skew = 1.5
     crosslag_kurt = 3
+  }
+
+  if (ar_sk == 1){
+    ar_skew = 0
+    ar_kurt = 3
+  } else if (ar_sk == 2){
+    ar_skew = 0.7
+    ar_kurt = 3
+  } else if (crosslag_sk == 3){
+    ar_skew = 1.5
+    ar_kurt = 3
   }
 
   if (thresh_CON == 1){ #normal
@@ -75,11 +86,11 @@ get_param<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,cr
   #  betaj <- matrix(gam, nrow = max(N), ncol = 3, byrow = TRUE) + uj
 
 
-    uj <- covsim::rIG(max(N), sigma = G, skewness = c(0,0, crosslag_skew),
-        excesskurt = c(3,3, crosslag_kurt), reps = 1)[[1]]
+    uj <- covsim::rIG(max(N), sigma = G, skewness = c(0,ar_skew, crosslag_skew),
+        excesskurt = c(3,ar_kurt, crosslag_kurt), reps = 1)[[1]]
 
     int<-uj[,1]
-    autoreg<- uj[,2]
+    autoreg<- uj[,2] +autoreg_coeff
     crosslag<-uj[,3] + crosslag_coeff
   }
 

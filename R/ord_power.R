@@ -3,7 +3,7 @@
 #' @param n number of categories for the ordinal outcome variable
 #' @param numSample number of participants
 #' @param numAssess number of assessments per participant
-#' @param thresh thresholds for ordinal outcome
+#' @param thresh_CON condition for thresholds: normal or skewed
 #' @param autoreg_coeff autoregressive coefficient
 #' @param crosslag_coeff cross-lag coefficient
 #' @param crosslag_sk cross-lag skewness and kuertosis
@@ -14,6 +14,7 @@
 #' @param Compliance compliance rate in percentage
 #' @param reps number of replications
 #' @param crosslag_prior prior for crosslag
+#' @param ar_sk ar skewness and kuertosis
 #' @return the mean of estimated cross-lag coefficient and percentage of significant effects from number of replicated simulations
 #' @import EMAtools
 #' @import Rcpp
@@ -29,7 +30,7 @@
 
 
 
-ord_power<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00=1,gamma_00_sd=1,gamma_01_sd=1,gamma_02_sd=1,Compliance=100, reps=50, crosslag_prior,thresh){
+ord_power<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00=1,gamma_00_sd=1,gamma_01_sd=1,gamma_02_sd=1,Compliance=100, reps=50, crosslag_prior, ar_sk){
 
    cl <- parallel::makePSOCKcluster(2)
   doParallel::registerDoParallel(cl)
@@ -37,7 +38,7 @@ ord_power<-function(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,cr
 
   Y=foreach::foreach(x = X, .packages=c('mnormt','tidyverse','DataCombine','EMAtools',
                                'ordinal', 'covsim', 'brms', 'Matrix','rstan','dbplyr','Rcpp'), .export = c("get_param","extract_modparams")) %dopar% {
-                                 obs<-get_param(n,numSample,numAssess,thresh,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00,gamma_00_sd,gamma_01_sd, gamma_02_sd, Compliance,crosslag_prior,thresh)
+                                 obs<-get_param(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00,gamma_00_sd,gamma_01_sd, gamma_02_sd, Compliance,crosslag_prior,ar_sk)
                                }
 
   parallel::stopCluster(cl)
