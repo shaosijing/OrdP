@@ -63,20 +63,48 @@ get_param<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coef
 
   # random intercept and random slope in autoregressive
   #gam <- c(gamma_00, autoreg_coeff,crosslag_coeff)
-  if (gamma_02_sd == 0){ # no variablity in cross-lag coefficient
-
-    a<-matrix(c(1,-0.54,-0.54, 1),nrow = 2)
+  if (gamma_01_sd == 0 & gamma_02_sd == 0){
+    int<-gamma_00 + rnorm(max(N), 0, gamma_00_sd)
+    autoreg<- rep(autoreg_coeff, max(N))
+    crosslag <- rep(crosslag_coeff,max(N))
+  } else if (gamma_01_sd != 0 & gamma_02_sd == 0){ # no variablity in cross-lag coefficient
+    if (corr ==1 ){
+      a<-matrix(c(1,0.5,0.5, 1),nrow = 2)
+    } else if (corr ==2){
+      a<-matrix(c(1,0,0,1),nrow = 2)
+    }
     stdevs <- c(gamma_00_sd,gamma_01_sd)
     b <- stdevs %*% t(stdevs)
     G <- b * a
 
     gam <- c(gamma_00, autoreg_coeff)
-    uj <- mnormt::rmnorm(max(N), mean = gam, varcov = G)
-   # betaj <- matrix(gam, nrow = max(N), ncol = 2, byrow = TRUE) + uj
+
+    uj <- covsim::rIG(max(N), sigma = G, skewness = c(0,ar_skew),
+                      excesskurt = c(3,ar_kurt), reps = 1)[[1]]
+
     int<-uj[,1]
     autoreg<- uj[,2]
     crosslag <- rep(crosslag_coeff,max(N))
-  } else if (gamma_02_sd != 0){
+  } else if (gamma_01_sd == 0 & gamma_02_sd != 0){
+    if (corr ==1 ){
+      a<-matrix(c(1,0.5,0.5, 1),nrow = 2)
+    } else if (corr ==2){
+      a<-matrix(c(1,0,0,1),nrow = 2)
+    }
+    stdevs <- c(gamma_00_sd,gamma_02_sd)
+    b <- stdevs %*% t(stdevs)
+    G <- b * a
+
+    gam <- c(gamma_00, crosslag_coeff)
+
+    uj <- covsim::rIG(max(N), sigma = G, skewness = c(0,crosslag_skew),
+                      excesskurt = c(3,crosslag_kurt), reps = 1)[[1]]
+    int<-uj[,1]
+    autoreg<- rep(autoreg_coeff,max(N))
+    crosslag <- uj[,2]
+  }
+
+  else if (gamma_01_sd != 0 & gamma_02_sd != 0){
     gam <- c(gamma_00, autoreg_coeff, crosslag_coeff)
 
     if (corr ==1 ){
@@ -87,10 +115,6 @@ get_param<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coef
     stdevs <- c(gamma_00_sd,gamma_01_sd,gamma_02_sd)
     b <- stdevs %*% t(stdevs)
     G <- b * a
-
-   # uj <- mnormt::rmnorm(max(N), mean = gam, varcov = G)
-  #  betaj <- matrix(gam, nrow = max(N), ncol = 3, byrow = TRUE) + uj
-
 
     uj <- covsim::rIG(max(N), sigma = G, skewness = c(0,ar_skew, crosslag_skew),
         excesskurt = c(3,ar_kurt, crosslag_kurt), reps = 1)[[1]]

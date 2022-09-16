@@ -12,15 +12,15 @@ ord_power(
   autoreg_coeff,
   crosslag_coeff,
   crosslag_sk,
-  gamma_00 = 1,
-  gamma_00_sd = 1,
-  gamma_01_sd = 1,
-  gamma_02_sd = 1,
-  Compliance = 100,
-  reps = 50,
+  gamma_00,
+  gamma_00_sd,
+  gamma_01_sd,
+  gamma_02_sd,
+  Compliance,
   crosslag_prior,
   ar_sk,
-  corr
+  corr,
+  reps
 )
 }
 \arguments{
@@ -48,13 +48,13 @@ ord_power(
 
 \item{Compliance}{compliance rate in percentage}
 
-\item{reps}{number of replications}
-
 \item{crosslag_prior}{prior for crosslag}
 
 \item{ar_sk}{ar skewness and kuertosis}
 
 \item{corr}{correlation between random ar and random crosslag}
+
+\item{reps}{number of replications}
 }
 \value{
 the mean of estimated cross-lag coefficient and percentage of significant effects from number of replicated simulations
