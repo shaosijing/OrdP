@@ -46,7 +46,7 @@ get_param<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coef
   } else if (ar_sk == 2){
     ar_skew = 0.7
     ar_kurt = 3
-  } else if (crosslag_sk == 3){
+  } else if (ar_sk == 3){
     ar_skew = 1.5
     ar_kurt = 3
   }
