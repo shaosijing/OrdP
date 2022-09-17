@@ -50,10 +50,15 @@ ord_power<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coef
 
   crosslag = round(mean(crosslag_est),2)
   count1<- sum(crosslag_p<0.05)
-  perc_sig<-round(count1/nrow(out),2)
-
   count2<- sum(crosslag_p>=0.05)
+
+  if (nrow(out) > 0){
+  perc_sig<-round(count1/nrow(out),2)
   perc_notsig<-round(count2/nrow(out),2)
+  } else if (nrow(out) = 0){
+  perc_sig<-NA
+  perc_notsig<-NA
+  }
   res<-list(crosslag,perc_sig, perc_notsig, nrow(out))
   return(res)
 }
