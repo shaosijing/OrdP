@@ -55,7 +55,7 @@ ord_power<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coef
   if (nrow(out) > 0){
   perc_sig<-round(count1/nrow(out),2)
   perc_notsig<-round(count2/nrow(out),2)
-  } else if (nrow(out) = 0){
+  } else if (nrow(out) == 0){
   perc_sig<-NA
   perc_notsig<-NA
   }
