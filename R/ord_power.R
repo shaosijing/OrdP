@@ -41,9 +41,6 @@ ord_power<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coef
                                'ordinal', 'covsim', 'brms', 'Matrix','rstan','dbplyr','Rcpp'), .export = c("get_param","extract_modparams")) %dopar% {
                                  obs<-get_param(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00,gamma_00_sd, gamma_01_sd,gamma_02_sd,Compliance,crosslag_prior,ar_sk, corr)
                                }
-
-  parallel::stopCluster(cl)
-
   out<-extract_modparams(Y, reps)
   crosslag_est<-out[,1]
   crosslag_p<-out[,2]
@@ -60,5 +57,6 @@ ord_power<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coef
   perc_notsig<-NA
   }
   res<-list(crosslag,perc_sig, perc_notsig, nrow(out))
+
   return(res)
 }
