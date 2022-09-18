@@ -159,9 +159,13 @@ get_param<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coef
 
   thresh_length = length(table(datt2$si_cat_lead))
   if (crosslag_prior == 1){
-      mod=tryCatch(ordinal::clmm2(si_cat_lead ~ si_cat+pred+(1|N), data = datt2, link = "probit"))
+      mod=try(ordinal::clmm2(si_cat_lead ~ si_cat+pred+(1|N), data = datt2, link = "probit"))
+      if ("try-error" %in% class(mod)){
+        res<-list(c(NA, NA, 1))
+      } else {
       sum=summary(mod)
-      res<-list(c(sum$coefficients[thresh_length+1,1],sum$coefficients[thresh_length+1,4]))
+      res<-list(c(sum$coefficients[thresh_length+1,1],sum$coefficients[thresh_length+1,4],0))
+      }
 
   } else if (crosslag_prior == 2){
     datt2$si_cat_lead <-as.ordered(datt2$si_cat_lead)
@@ -182,3 +186,4 @@ get_param<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coef
   return(res)
 
 }
+
