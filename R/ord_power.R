@@ -53,8 +53,8 @@ ord_power<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coef
 
   perc_sig<-round(count1/nrow(out),2)
   perc_notsig<-round(count2/nrow(out),2)
-  errorPerc <- round(sum(error = 2)/nrow(out),2)
-  warningPerc <- round(sum(error = 1)/nrow(out),2)
+  errorPerc <- round(sum(error == 2)/nrow(out),2)
+  warningPerc <- round(sum(error == 1)/nrow(out),2)
   res<-list(crosslag,perc_sig, perc_notsig, nrow(out), errorPerc, warningPerc)
 
   return(res)
