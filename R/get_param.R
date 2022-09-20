@@ -162,43 +162,33 @@ get_param<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coef
 
   if (crosslag_prior == 1){
 
+    factory <- function() {
+      warn <- err <- NULL
+      res <- withCallingHandlers(
+        tryCatch(
+          # fun(x),
+          ordinal::clmm2(si_cat_lead ~ si_cat+pred+(1|N), data = datt2, link = "probit"),
+          error = function(e) {
+            err <<- conditionMessage(e)
+            NULL
+          }),
+        warning = function(w) {
+          warn <<- append(warn, conditionMessage(w))
+          invokeRestart("muffleWarning")
+        }
+      )
+      list(res=res, warn = warn, err = err)
+    }
 
+    mod<-factory()
 
-    mod <- tryCatch(
-      {
-        set.seed(randnum)
-        out <- ordinal::clmm2(si_cat_lead ~ si_cat+pred+(1|N), data = datt2, link = "probit",lol)
-        # out <- 1
-        ret <- list(out=out, warning=FALSE, error = FALSE)
-        # warning("This is a warning for test")
-
-      },
-      warning = function(w){
-        set.seed(randnum)
-        out <- ordinal::clmm2(si_cat_lead ~ si_cat+pred+(1|N), data = datt2, link = "probit")
-       # print(out)
-       # print(w)
-       return(ret<-list(out=out, warning=TRUE, error = FALSE))
-      },
-      error = function(e){
-       # print(e)
-        return(ret<-list(warning = FALSE, error = TRUE)) # Return "Error"
-      },
-      finally={
-        # Everything that should be executed at the end,
-        # regardless of success or error.
-        # Return your output even if there is a warning
-      }
-    )
-    mod
-
-    if (mod$warning == TRUE & mod$error == FALSE){
-      sum = summary(mod$out)
+    if (is.null(mod$warn) == FALSE & is.null(mod$err) == TRUE){
+      sum = summary(mod$res)
       res<-list(c(sum$coefficients[thresh_length+1,1],sum$coefficients[thresh_length+1,4],1))
-    } else if (mod$warning == FALSE & mod$error == FALSE){
-      sum = summary(mod$out)
-      res<-list(c(sum$coefficients[thresh_length+1,1],sum$coefficients[thresh_length+1,4],0))
-    }  else if (mod$error == TRUE){
+    } else if (is.null(mod$warn) == TRUE & is.null(mod$err) == TRUE){
+      sum = summary(mod$res)
+      res<-list(c(sum$coefficients[thresh_length+1,0],sum$coefficients[thresh_length+1,4],0))
+    }  else if (mod$err == TRUE){
         res<-list(c(NA, NA, 2))
       }
     }
