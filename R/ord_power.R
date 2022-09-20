@@ -33,15 +33,16 @@
 
 ord_power<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00,gamma_00_sd, gamma_01_sd,gamma_02_sd,Compliance,crosslag_prior,ar_sk, corr, reps){
 
-   cl <- parallel::makePSOCKcluster(1)
-  doParallel::registerDoParallel(cl)
-  X <- 1:reps
+  # cl <- parallel::makePSOCKcluster(1)
+  #doParallel::registerDoParallel(cl)
+  #X <- 1:reps
 
-  Y=foreach::foreach(x = X, .packages=c('tidyverse','DataCombine','EMAtools',
-                               'ordinal', 'covsim', 'brms', 'Matrix','rstan','dbplyr','Rcpp'), .export = c("get_param","extract_modparams")) %dopar% {
-                                 obs<-try(get_param(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00,gamma_00_sd, gamma_01_sd,gamma_02_sd,Compliance,crosslag_prior,ar_sk, corr))
-                               }
-  out<-extract_modparams(Y, reps)
+  #Y=foreach::foreach(x = X, .packages=c('tidyverse','DataCombine','EMAtools',
+  #                             'ordinal', 'covsim', 'brms', 'Matrix','rstan','dbplyr','Rcpp'), .export = c("get_param","extract_modparams")) %dopar% {
+obs<-replicate(10, try(get_param(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00,gamma_00_sd, gamma_01_sd,gamma_02_sd,Compliance,crosslag_prior,ar_sk, corr)))
+
+  out <- do.call(rbind, obs)
+
   crosslag_est<-out[,1]
   crosslag_p<-out[,2]
   error<- out[,3]
