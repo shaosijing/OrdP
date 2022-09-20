@@ -39,7 +39,7 @@ ord_power<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coef
 
   Y=foreach::foreach(x = X, .packages=c('tidyverse','DataCombine','EMAtools',
                                'ordinal', 'covsim', 'brms', 'Matrix','rstan','dbplyr','Rcpp'), .export = c("get_param","extract_modparams")) %dopar% {
-                                 obs<-try(get_param1(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00,gamma_00_sd, gamma_01_sd,gamma_02_sd,Compliance,crosslag_prior,ar_sk, corr))
+                                 obs<-try(get_param(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00,gamma_00_sd, gamma_01_sd,gamma_02_sd,Compliance,crosslag_prior,ar_sk, corr))
                                }
   out<-extract_modparams(Y, reps)
   crosslag_est<-out[,1]
