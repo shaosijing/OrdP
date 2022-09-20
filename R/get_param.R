@@ -158,43 +158,52 @@ get_param<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coef
   #datt2$si_cat<-as.factor(datt2$si_cat)
 
   thresh_length = length(table(datt2$si_cat_lead))
-  randnum<-floor(runif(1,0,1)*10000)
-  if (crosslag_prior == 1){
-    set.seed(randnum)
-    test<-tryCatch(mod<-{ordinal::clmm2(si_cat_lead ~ si_cat+pred+(1|N), data = datt2, link = "probit"); return(mod)}, warning = function(w) print("Warning"),error = function(e) {print("Error")})
+  randnum<-floor(runif(1,0,1)*1000)
 
-    if (test == "Warning"){
-      if (exists("mod") == T){
-      sum = summary(mod)
-      res<-list(c(sum$coefficients[thresh_length+1,1],sum$coefficients[thresh_length+1,4],0))
-      } else {res<-list(c(NA, NA, 2))}
-    } else if (test == "Error"){
-      res<-list(c(NA, NA, 2))
-    } else {
-      if (exists("mod") == T){
-      sum = summary(mod)
+  if (crosslag_prior == 1){
+
+
+
+    mod <- tryCatch(
+      {
+        set.seed(randnum)
+        out <- ordinal::clmm2(si_cat_lead ~ si_cat+pred+(1|N), data = datt2, link = "probit",lol)
+        # out <- 1
+        ret <- list(out=out, warning=FALSE, error = FALSE)
+        # warning("This is a warning for test")
+
+      },
+      warning = function(w){
+        set.seed(randnum)
+        out <- ordinal::clmm2(si_cat_lead ~ si_cat+pred+(1|N), data = datt2, link = "probit")
+       # print(out)
+       # print(w)
+       return(ret<-list(out=out, warning=TRUE, error = FALSE))
+      },
+      error = function(e){
+       # print(e)
+        return(ret<-list(warning = FALSE, error = TRUE)) # Return "Error"
+      },
+      finally={
+        # Everything that should be executed at the end,
+        # regardless of success or error.
+        # Return your output even if there is a warning
+      }
+    )
+    mod
+
+    if (mod$warning == TRUE & mod$error == FALSE){
+      sum = summary(mod$out)
       res<-list(c(sum$coefficients[thresh_length+1,1],sum$coefficients[thresh_length+1,4],1))
-      } else {
+    } else if (mod$warning == FALSE & mod$error == FALSE){
+      sum = summary(mod$out)
+      res<-list(c(sum$coefficients[thresh_length+1,1],sum$coefficients[thresh_length+1,4],0))
+    }  else if (mod$error == TRUE){
         res<-list(c(NA, NA, 2))
       }
     }
 
-      #if (test == "Warning"){
-       #set.seed(randnum)
-       #mod <- ordinal::clmm2(si_cat_lead ~ si_cat+pred+(1|N), data = datt2, link = "probit")
-      #  sum <- summary(mod)
-       # res<-list(c(sum$coefficients[thresh_length+1,1],sum$coefficients[thresh_length+1,4], 1))
-     #} #else if (test == "Error"){
-      #  res<-list(c(NA, NA, 2))
-       # }
-      #  else {
-     #     set.seed(randnum)
-      #    mod <- ordinal::clmm2(si_cat_lead ~ si_cat+pred+(1|N), data = datt2, link = "probit")
-     #   sum <- summary(mod)
-     #   res<-list(c(sum$coefficients[thresh_length+1,1],sum$coefficients[thresh_length+1,4],0))
-     # }
-
-  } else if (crosslag_prior == 2){
+   else if (crosslag_prior == 2){
     datt2$si_cat_lead <-as.ordered(datt2$si_cat_lead)
     mod = try(brm(si_cat_lead ~ si_cat+pred+(1|N), data = datt2,family = cumulative("probit", threshold="flexible")))
     sum=summary(mod)
