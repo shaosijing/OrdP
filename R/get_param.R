@@ -19,6 +19,21 @@
 #' @export
 
 get_param<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00,gamma_00_sd, gamma_01_sd,gamma_02_sd,Compliance,crosslag_prior,ar_sk, corr){
+  # n: number of category (input)
+  # numSample: number of participants (input)
+  # numAssess: number of assessments (input)
+  # thresh_CON: marginal distribution (default)
+  # autoreg_coeff: AR(1) fixed effect
+  # crosslag_coeff: cross-lag fixed effect
+  # ar_sk: skewness level for distribution of AR(1) random effect, levels: skew = 0, 0.7, 1.5
+  # crosslag_sk: skewness level for distribution of cross-lag random effect, levels: skew = 0, 0.7, 1.5
+  # gamma_00: fixed effect for intercept
+  # gamma_00_sd: variability of random intercept
+  # gamma_01_sd: variability of random AR(1) effect
+  # gamma_02_sd: variability of random cross-lag effect
+  # Compliance: default as 100%
+  # corr: correlation between random AR(1) and random cross-lag effect, levels: 1 = correlation; 2 = no correlation
+
 
   N = 1:numSample
   assess = 1:numAssess
