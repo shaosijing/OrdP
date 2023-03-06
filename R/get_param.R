@@ -3,37 +3,38 @@
 #' @param n number of categories for the ordinal outcome variable
 #' @param numSample number of participants
 #' @param numAssess number of assessments
-#' @param thresh_CON condition for thresholds: normal or skewed
+#' @param thresh_CON threshold conditions, 1 represents normal thresholds, 2 represents right-skewed thresholds
 #' @param autoreg_coeff autoregressive coefficient
 #' @param crosslag_coeff cross-lag coefficient
-#' @param crosslag_sk cross-lag skewness and kuertosis
+#' @param crosslag_skew cross-lag skewness
+#' @param crosslag_kurt cross-lag kurtosis
 #' @param gamma_00 fixed intercept
 #' @param gamma_00_sd random intercept
 #' @param gamma_01_sd random autoregressive cofficient sd
 #' @param gamma_02_sd random cross-lag coefficient sd
 #' @param Compliance compliance rate in percentage
-#' @param crosslag_prior prior for crosslag
-#' @param ar_sk ar skewness and kuertosis
+#' @param ar_skew ar skewness
+#' @param ar_kurt ar kurtosis
 #' @param corr correlation between random ar and random crosslag
 #' @return the estimated cross-lag coefficient and its corresponding p-value
 #' @export
 
-get_param<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coeff,crosslag_sk,gamma_00,gamma_00_sd, gamma_01_sd,gamma_02_sd,Compliance,crosslag_prior,ar_sk, corr){
-  # n: number of category (input)
-  # numSample: number of participants (input)
-  # numAssess: number of assessments (input)
-  # thresh_CON: marginal distribution (default)
-  # autoreg_coeff: AR(1) fixed effect
-  # crosslag_coeff: cross-lag fixed effect
-  # ar_sk: skewness level for distribution of AR(1) random effect, levels: skew = 0, 0.7, 1.5
-  # crosslag_sk: skewness level for distribution of cross-lag random effect, levels: skew = 0, 0.7, 1.5
-  # gamma_00: fixed effect for intercept
-  # gamma_00_sd: variability of random intercept
-  # gamma_01_sd: variability of random AR(1) effect
-  # gamma_02_sd: variability of random cross-lag effect
-  # Compliance: default as 100%
-  # corr: correlation between random AR(1) and random cross-lag effect, levels: 1 = correlation; 2 = no correlation
-
+get_param <- function(n,
+                    numSample,
+                    numAssess,
+                    thresh_CON,
+                    autoreg_coeff,
+                    crosslag_coeff,
+                    crosslag_skew = 0,
+                    crosslag_kurt = 3,
+                    gamma_00,
+                    gamma_00_sd,
+                    gamma_01_sd,
+                    gamma_02_sd,
+                    Compliance,
+                    ar_skew = 0,
+                    ar_kurt = 3,
+                    corr = 1){
 
   N = 1:numSample
   assess = 1:numAssess
@@ -44,37 +45,12 @@ get_param<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coef
   datt$si_star = NA
   datt$pred = rnorm(nrow(datt))
 
-  if (crosslag_sk == 1){
-    crosslag_skew = 0
-    crosslag_kurt = 3
-  } else if (crosslag_sk == 2){
-    crosslag_skew = 0.7
-    crosslag_kurt = 3
-  } else if (crosslag_sk == 3){
-    crosslag_skew = 1.5
-    crosslag_kurt = 3
-  }
-
-  if (ar_sk == 1){
-    ar_skew = 0
-    ar_kurt = 3
-  } else if (ar_sk == 2){
-    ar_skew = 0.7
-    ar_kurt = 3
-  } else if (ar_sk == 3){
-    ar_skew = 1.5
-    ar_kurt = 3
-  }
-
   if (thresh_CON == 1){ #normal
-    thresh = c(-1.5, -1, 1, 1.5)
+    thresh = c(1:(n-1))
+    thresh = thresh - mean(thresh)
   } else if (thresh_CON == 2){ #skewed
-    thresh = c(0,1,2,3)
+    thresh = c(1:(n-1))
   }
-  # autoreg <- rep(autoreg_coeff,max(N)) #leave out random effect for now
-  #int<-  rnorm(numSample,gamma_00,gamma_00_sd)
-  #autoreg <- rnorm(max(N),autoreg_coeff, 0.569)
-  #crosslag <- rep(crosslag_coeff,max(N))
 
   # random intercept and random slope in autoregressive
   #gam <- c(gamma_00, autoreg_coeff,crosslag_coeff)
@@ -121,16 +97,16 @@ get_param<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coef
     gam <- c(gamma_00, autoreg_coeff, crosslag_coeff)
 
     if (corr ==1 ){
-    a<-matrix(c(1,-0.5,0.5,-0.5, 1, -0.5, 0.5,-0.5, 1),nrow = 3)
+      a<-matrix(c(1,-0.5,0.5,-0.5, 1, -0.5, 0.5,-0.5, 1),nrow = 3)
     } else if (corr ==2){
-    a<-matrix(c(1,0,0,0, 1, 0, 0, 0, 1),nrow = 3)
+      a<-matrix(c(1,0,0,0, 1, 0, 0, 0, 1),nrow = 3)
     }
     stdevs <- c(gamma_00_sd,gamma_01_sd,gamma_02_sd)
     b <- stdevs %*% t(stdevs)
     G <- b * a
 
     uj <- covsim::rIG(max(N), sigma = G, skewness = c(0,ar_skew, crosslag_skew),
-        excesskurt = c(3,ar_kurt, crosslag_kurt), reps = 1)[[1]]
+                      excesskurt = c(3,ar_kurt, crosslag_kurt), reps = 1)[[1]]
 
     int<-uj[,1]
     autoreg<- uj[,2] +autoreg_coeff
@@ -139,7 +115,7 @@ get_param<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coef
 
   count = 0
 
-  thresh[5]=100
+  thresh[n]=100
   thresh1=append(thresh,-100,0)
   datt$si_cat = NULL
 
@@ -173,58 +149,58 @@ get_param<-function(n,numSample,numAssess,thresh_CON,autoreg_coeff,crosslag_coef
   #datt2$si_cat<-as.factor(datt2$si_cat)
 
   thresh_length = length(table(datt2$si_cat_lead))
-  randnum<-floor(runif(1,0,1)*1000)
+  datt2$N <- factor(datt2$N)
+  #randnum<-floor(runif(1,0,1)*1000)
 
-  if (crosslag_prior == 1){
 
-    factory <- function() {
-      warn <- err <- NULL
-      res <- withCallingHandlers(
-        tryCatch(
-          # fun(x),
-          ordinal::clmm2(si_cat_lead ~ si_cat+pred+(1|N), data = datt2, link = "probit"),
-          error = function(e) {
-            err <<- conditionMessage(e)
-            NULL
-          }),
-        warning = function(w) {
-          warn <<- append(warn, conditionMessage(w))
-          invokeRestart("muffleWarning")
-        }
-      )
-      list(res=res, warn = warn, err = err)
-    }
-
-    mod<-factory()
-
-    if (is.null(mod$warn) == FALSE & is.null(mod$err) == TRUE){
-      sum = summary(mod$res)
-      res<-list(c(sum$coefficients[thresh_length+1,1],sum$coefficients[thresh_length+1,4],1))
-    } else if (is.null(mod$warn) == TRUE & is.null(mod$err) == TRUE){
-      sum = summary(mod$res)
-      res<-list(c(sum$coefficients[thresh_length+1,0],sum$coefficients[thresh_length+1,4],0))
-    }  else if (mod$err == TRUE){
-        res<-list(c(NA, NA, 2))
+  factory1 <- function() {
+    warn <- err <- NULL
+    res <- withCallingHandlers(
+      tryCatch(
+        # fun(x),
+        ordinal::clmm(si_cat_lead ~ si_cat + pred + (1|N), data=datt2, link = "probit"),
+        error = function(e) {
+          err <<- conditionMessage(e)
+          NULL
+        }),
+      warning = function(w) {
+        warn <<- append(warn, conditionMessage(w))
+        invokeRestart("muffleWarning")
       }
-    }
+    )
+    list(res=res, warn = warn, err = err)
+  }
 
-   else if (crosslag_prior == 2){
-    datt2$si_cat_lead <-as.ordered(datt2$si_cat_lead)
-    mod = try(brm(si_cat_lead ~ si_cat+pred+(1|N), data = datt2,family = cumulative("probit", threshold="flexible")))
-    sum=summary(mod)
-    a<-sum$fixed[thresh_length+1,3]
-    b<-sum$fixed[thresh_length+1,4]
-    if (a>0 & b > 0) {
-      res<-list(c(sum$fixed[thresh_length+1,1],0))
-    } else if (a <0 & b<0) {
-      res<-list(c(sum$fixed[thresh_length+1,1],0))
-    } else {res<-list(c(sum$fixed[thresh_length+1,1],1))}
+  mod1 <- factory1()
+  sum1 <- summary(mod1$res)
 
-     }
+  if (!is.null(mod1$err)){
+    res <- c(NA, NA)
+  }else{
+    res <- c(sum1$coefficients[thresh_length+1,1],sum1$coefficients[thresh_length+1,4])
+  }
 
-#coefficients[6,1]: est
+
+  #coefficients[6,1]: est
   #coefficients[6,4]: p value
   return(res)
 
 }
 
+
+# get_param(n = 7,
+#                     numSample = 80,
+#                     numAssess = 28,
+#                     thresh_CON = 1,
+#                     autoreg_coeff = 0.2,
+#                     crosslag_coeff = 0.2,
+#                     crosslag_skew = 0,
+#                     crosslag_kurt = 3,
+#                     gamma_00 = 1,
+#                     gamma_00_sd = 0.2,
+#                     gamma_01_sd = 0.2,
+#                     gamma_02_sd = 0.2,
+#                     Compliance = 1,
+#                     ar_skew = 0,
+#                     ar_kurt = 3,
+#                     corr = 1)
