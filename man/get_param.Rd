@@ -11,15 +11,16 @@ get_param(
   thresh_CON,
   autoreg_coeff,
   crosslag_coeff,
-  crosslag_sk,
+  crosslag_skew = 0,
+  crosslag_kurt = 3,
   gamma_00,
   gamma_00_sd,
   gamma_01_sd,
   gamma_02_sd,
   Compliance,
-  crosslag_prior,
-  ar_sk,
-  corr
+  ar_skew = 0,
+  ar_kurt = 3,
+  corr = 1
 )
 }
 \arguments{
@@ -29,13 +30,15 @@ get_param(
 
 \item{numAssess}{number of assessments}
 
-\item{thresh_CON}{condition for thresholds: normal or skewed}
+\item{thresh_CON}{threshold conditions, 1 represents normal thresholds, 2 represents right-skewed thresholds}
 
 \item{autoreg_coeff}{autoregressive coefficient}
 
 \item{crosslag_coeff}{cross-lag coefficient}
 
-\item{crosslag_sk}{cross-lag skewness and kuertosis}
+\item{crosslag_skew}{cross-lag skewness}
+
+\item{crosslag_kurt}{cross-lag kurtosis}
 
 \item{gamma_00}{fixed intercept}
 
@@ -47,14 +50,14 @@ get_param(
 
 \item{Compliance}{compliance rate in percentage}
 
-\item{crosslag_prior}{prior for crosslag}
+\item{ar_skew}{ar skewness}
 
-\item{ar_sk}{ar skewness and kuertosis}
+\item{ar_kurt}{ar kurtosis}
 
 \item{corr}{correlation between random ar and random crosslag}
 }
 \value{
-the estimated cross-lag coefficient and its corresponding p-value
+the estimated cross-lag coefficient, its corresponding p-value and whether an error (2) or warning (1) message is produced
 }
 \description{
 This function allows you to simulate longitudinal ordinal data and estimate the parameters with multilevel models

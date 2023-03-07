@@ -16,7 +16,7 @@
 #' @param ar_skew ar skewness
 #' @param ar_kurt ar kurtosis
 #' @param corr correlation between random ar and random crosslag
-#' @return the estimated cross-lag coefficient and its corresponding p-value
+#' @return the estimated cross-lag coefficient, its corresponding p-value and whether an error (2) or warning (1) message is produced
 #' @export
 
 get_param <- function(n,
@@ -175,9 +175,11 @@ get_param <- function(n,
   sum1 <- summary(mod1$res)
 
   if (!is.null(mod1$err)){
-    res <- c(NA, NA)
+    res <- c(NA, NA, 2)
+  }else if (!is.null(mod1$warn)){
+    res <- c(sum1$coefficients[thresh_length+1,1],sum1$coefficients[thresh_length+1,4], 1)
   }else{
-    res <- c(sum1$coefficients[thresh_length+1,1],sum1$coefficients[thresh_length+1,4])
+    res <- c(sum1$coefficients[thresh_length+1,1],sum1$coefficients[thresh_length+1,4], 0)
   }
 
 
@@ -204,3 +206,4 @@ get_param <- function(n,
 #                     ar_skew = 0,
 #                     ar_kurt = 3,
 #                     corr = 1)
+

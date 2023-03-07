@@ -11,15 +11,16 @@ ord_power(
   thresh_CON,
   autoreg_coeff,
   crosslag_coeff,
-  crosslag_sk,
+  crosslag_skew = 0,
+  crosslag_kurt = 3,
   gamma_00,
   gamma_00_sd,
   gamma_01_sd,
   gamma_02_sd,
   Compliance,
-  crosslag_prior,
-  ar_sk,
-  corr,
+  ar_skew = 0,
+  ar_kurt = 3,
+  corr = 1,
   reps
 )
 }
@@ -28,36 +29,38 @@ ord_power(
 
 \item{numSample}{number of participants}
 
-\item{numAssess}{number of assessments per participant}
+\item{numAssess}{number of assessments}
 
-\item{thresh_CON}{condition for thresholds: normal or skewed}
+\item{thresh_CON}{threshold conditions, 1 represents normal thresholds, 2 represents right-skewed thresholds}
 
 \item{autoreg_coeff}{autoregressive coefficient}
 
 \item{crosslag_coeff}{cross-lag coefficient}
 
-\item{crosslag_sk}{cross-lag skewness and kuertosis}
+\item{crosslag_skew}{cross-lag skewness}
+
+\item{crosslag_kurt}{cross-lag kurtosis}
 
 \item{gamma_00}{fixed intercept}
 
 \item{gamma_00_sd}{random intercept}
 
-\item{gamma_01_sd}{random autoregressive cofficient}
+\item{gamma_01_sd}{random autoregressive cofficient sd}
 
 \item{gamma_02_sd}{random cross-lag coefficient sd}
 
 \item{Compliance}{compliance rate in percentage}
 
-\item{crosslag_prior}{prior for crosslag}
+\item{ar_skew}{ar skewness}
 
-\item{ar_sk}{ar skewness and kuertosis}
+\item{ar_kurt}{ar kurtosis}
 
 \item{corr}{correlation between random ar and random crosslag}
 
 \item{reps}{number of replications}
 }
 \value{
-the mean of estimated cross-lag coefficient and percentage of significant effects from number of replicated simulations
+the mean of estimated cross-lag coefficient, the percentage of significant effects, the percentage of non-significant effects, total replication number, percentage of replications that produced errors, and percentage of replications that produced warnings
 }
 \description{
 This function allows you to simulate longitudinal ordinal data and estimate the parameters with multilevel models for a nubmer of times

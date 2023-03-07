@@ -1,8 +1,8 @@
 Package: OrdPower
 Type: Package
-Title: What the Package Does (Title Case)
+Title: OrdPower
 Version: 0.1.0
-Author: Who wrote it
+Author: Authors
 Maintainer: The package maintainer <yourself@somewhere.net>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
@@ -13,11 +13,7 @@ Imports:
     DataCombine,
     doParallel,
     EMAtools,
-    magrittr,
     covsim,
-    brms,
-    Matrix,
-    tidyverse,
-    Brobdingnag
-Depends: foreach, ordinal,Rcpp,rstan,dbplyr
-RoxygenNote: 7.2.1
+    Matrix
+Depends: foreach, ordinal,Rcpp, magrittr
+RoxygenNote: 7.2.2
