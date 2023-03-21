@@ -1,12 +1,11 @@
 Package: OrdPower
 Type: Package
 Title: OrdPower
-Version: 0.1.0
-Author: Authors
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Version: 0.1.1
+Author: Sijing Shao, Ziqian Xu, Ross Jacobucci
+Maintainer: Sijing Shao <sshao2@nd.edu>
+Description: OrdPower is a package that provides the pipelines for obtaining power for longitudinal models with ordinal variables using a simulation-based approach. Users can specify different sample sizes, timepoints, skewness of effects etc. in calculating power.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports: 
