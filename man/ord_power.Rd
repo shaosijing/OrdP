@@ -17,11 +17,11 @@ ord_power(
   gamma_00_sd,
   gamma_01_sd,
   gamma_02_sd,
-  Compliance,
+  Compliance = 1,
   ar_skew = 0,
   ar_kurt = 3,
   corr = 1,
-  reps
+  reps = 100
 )
 }
 \arguments{
@@ -55,7 +55,7 @@ ord_power(
 
 \item{ar_kurt}{ar kurtosis}
 
-\item{corr}{correlation between random ar and random crosslag}
+\item{corr}{correlation between random ar and random crosslag, 1 indicating correlation of 0.5, 2 indicating no corrrelation}
 
 \item{reps}{number of replications}
 }

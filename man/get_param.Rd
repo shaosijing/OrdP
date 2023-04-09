@@ -54,7 +54,7 @@ get_param(
 
 \item{ar_kurt}{ar kurtosis}
 
-\item{corr}{correlation between random ar and random crosslag}
+\item{corr}{correlation between random ar and random crosslag, 1 indicating correlation of 0.5, 2 indicating no corrrelation}
 }
 \value{
 the estimated cross-lag coefficient, its corresponding p-value and whether an error (2) or warning (1) message is produced

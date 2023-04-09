@@ -15,7 +15,7 @@
 #' @param Compliance compliance rate in percentage
 #' @param ar_skew ar skewness
 #' @param ar_kurt ar kurtosis
-#' @param corr correlation between random ar and random crosslag
+#' @param corr correlation between random ar and random crosslag, 1 indicating correlation of 0.5, 2 indicating no corrrelation
 #' @return the estimated cross-lag coefficient, its corresponding p-value and whether an error (2) or warning (1) message is produced
 #' @export
 
@@ -153,33 +153,95 @@ get_param <- function(n,
   #randnum<-floor(runif(1,0,1)*1000)
 
 
-  factory1 <- function() {
-    warn <- err <- NULL
-    res <- withCallingHandlers(
-      tryCatch(
-        # fun(x),
-        ordinal::clmm(si_cat_lead ~ si_cat + pred + (1|N), data=datt2, link = "probit"),
-        error = function(e) {
-          err <<- conditionMessage(e)
-          NULL
-        }),
-      warning = function(w) {
-        warn <<- append(warn, conditionMessage(w))
-        invokeRestart("muffleWarning")
-      }
-    )
-    list(res=res, warn = warn, err = err)
+
+
+  if (gamma_01_sd == 0){
+    factory1 <- function() {
+      warn <- err <- NULL
+      res <- withCallingHandlers(
+        tryCatch(
+          # fun(x),
+          ordinal::clmm(si_cat_lead ~ si_cat + pred + (1|N), data=datt2, link = "probit"),
+          error = function(e) {
+            err <<- conditionMessage(e)
+            NULL
+          }),
+        warning = function(w) {
+          warn <<- append(warn, conditionMessage(w))
+          invokeRestart("muffleWarning")
+        }
+      )
+      list(res=res, warn = warn, err = err)
+    }
+    mod1 <- factory1()
+  } else if (gamma_02_sd == 0){
+    factory2 <- function() {
+      warn <- err <- NULL
+      res <- withCallingHandlers(
+        tryCatch(
+          # fun(x),
+          ordinal::clmm(si_cat_lead ~ si_cat + pred + (1+si_cat|N), data=datt2,link = "probit"),
+          error = function(e) {
+            err <<- conditionMessage(e)
+            NULL
+          }),
+        warning = function(w) {
+          warn <<- append(warn, conditionMessage(w))
+          invokeRestart("muffleWarning")
+        }
+      )
+      list(res=res, warn = warn, err = err)
+    }
+
+
+    mod2<-factory2()
+  }else{
+    factory3 <- function() {
+      warn <- err <- NULL
+      res <- withCallingHandlers(
+        tryCatch(
+          # fun(x),
+          ordinal::clmm(si_cat_lead ~ si_cat+pred+(1+si_cat+pred|N), data = datt2, link = "probit"),
+          error = function(e) {
+            err <<- conditionMessage(e)
+            NULL
+          }),
+        warning = function(w) {
+          warn <<- append(warn, conditionMessage(w))
+          invokeRestart("muffleWarning")
+        }
+      )
+      list(res=res, warn = warn, err = err)
+    }
+
+    mod3<-factory3()
   }
 
-  mod1 <- factory1()
-  sum1 <- summary(mod1$res)
 
-  if (!is.null(mod1$err)){
-    res <- c(NA, NA, 2)
-  }else if (!is.null(mod1$warn)){
-    res <- c(sum1$coefficients[thresh_length+1,1],sum1$coefficients[thresh_length+1,4], 1)
+
+
+
+
+
+  if (gamma_01_sd == 0){
+    sum.m <- summary(mod1$res)
+    mod.m <- mod1
+  } else if (gamma_02_sd == 0){
+    sum.m <- summary(mod2$res)
+    mod.m <- mod2
   }else{
-    res <- c(sum1$coefficients[thresh_length+1,1],sum1$coefficients[thresh_length+1,4], 0)
+    sum.m <- summary(mod3$res)
+    mod.m <- mod3
+  }
+
+
+
+  if (!is.null(mod.m$err)){
+    res <- c(NA, NA, 2)
+  }else if (!is.null(mod.m$warn)){
+    res <- c(sum.m$coefficients[thresh_length+1,1],sum.m$coefficients[thresh_length+1,4], 1)
+  }else{
+    res <- c(sum.m$coefficients[thresh_length+1,1],sum.m$coefficients[thresh_length+1,4], 0)
   }
 
 
@@ -200,8 +262,8 @@ get_param <- function(n,
 #                     crosslag_kurt = 3,
 #                     gamma_00 = 1,
 #                     gamma_00_sd = 0.2,
-#                     gamma_01_sd = 0.2,
-#                     gamma_02_sd = 0.2,
+#                     gamma_01_sd = 0,
+#                     gamma_02_sd = 0,
 #                     Compliance = 1,
 #                     ar_skew = 0,
 #                     ar_kurt = 3,
