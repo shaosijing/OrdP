@@ -4,7 +4,7 @@ Title: OrdPower
 Version: 0.1.1
 Author: Sijing Shao, Ziqian Xu, Ross Jacobucci
 Maintainer: Sijing Shao <sshao2@nd.edu>
-Description: OrdPower is a package that provides the pipelines for obtaining power for longitudinal models with ordinal variables using a simulation-based approach. Users can specify different sample sizes, timepoints, skewness of effects etc. in calculating power.
+Description: This package provides the pipelines for power analysis of longitudinal models with ordinal outcome variables using a simulation-based approach. Users can specify different sample sizes, timepoints, skewness of effects etc. when performing power analysis.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -13,6 +13,8 @@ Imports:
     doParallel,
     EMAtools,
     covsim,
-    Matrix
-Depends: foreach, ordinal,Rcpp, magrittr
+    Matrix,
+    magrittr,
+    foreach
+Depends:  ordinal, Rcpp
 RoxygenNote: 7.2.2

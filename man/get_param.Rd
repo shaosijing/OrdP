@@ -62,3 +62,16 @@ the estimated cross-lag coefficient, its corresponding p-value and whether an er
 \description{
 This function allows you to simulate longitudinal ordinal data and estimate the parameters with multilevel models
 }
+\examples{
+get_param(n = 5,
+numSample = 35,
+numAssess = 73,
+thresh_CON = 2,
+autoreg_coeff = 0.919,
+crosslag_coeff = 0.4,
+gamma_00 = 0,
+gamma_00_sd = 1.043,
+gamma_01_sd = 0.591,
+gamma_02_sd = 0.13,
+Compliance = 1)
+}

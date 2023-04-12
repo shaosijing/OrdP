@@ -18,7 +18,18 @@
 #' @param corr correlation between random ar and random crosslag, 1 indicating correlation of 0.5, 2 indicating no corrrelation
 #' @return the estimated cross-lag coefficient, its corresponding p-value and whether an error (2) or warning (1) message is produced
 #' @export
-
+#' @examples
+#' get_param(n = 5,
+#' numSample = 35,
+#' numAssess = 73,
+#' thresh_CON = 2,
+#' autoreg_coeff = 0.919,
+#' crosslag_coeff = 0.4,
+#' gamma_00 = 0,
+#' gamma_00_sd = 1.043,
+#' gamma_01_sd = 0.591,
+#' gamma_02_sd = 0.13,
+#' Compliance = 1)
 get_param <- function(n,
                     numSample,
                     numAssess,

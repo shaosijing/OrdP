@@ -65,3 +65,17 @@ the mean of estimated cross-lag coefficient, the percentage of significant effec
 \description{
 This function allows you to simulate longitudinal ordinal data and estimate the parameters with multilevel models for a nubmer of times
 }
+\examples{
+ord_power(n = 5,
+numSample = 35,
+numAssess = 73,
+thresh_CON = 2,
+autoreg_coeff = 0.919,
+crosslag_coeff = 0.4,
+gamma_00 = 0,
+gamma_00_sd = 1.043,
+gamma_01_sd = 0.591,
+gamma_02_sd = 0.13,
+Compliance = 1,
+reps=200)
+}
