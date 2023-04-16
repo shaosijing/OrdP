@@ -10,11 +10,13 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     DataCombine,
-    doParallel,
     EMAtools,
     covsim,
-    Matrix,
-    magrittr,
-    foreach
+    Matrix
 Depends:  ordinal, Rcpp
+Suggests: 
+    knitr,
+    rmarkdown
+Roxygen: list(markdown = TRUE)
+VignetteBuilder: knitr
 RoxygenNote: 7.2.2

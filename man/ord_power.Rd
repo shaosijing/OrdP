@@ -77,5 +77,5 @@ gamma_00_sd = 1.043,
 gamma_01_sd = 0.591,
 gamma_02_sd = 0.13,
 Compliance = 1,
-reps=200)
+reps=10)
 }
