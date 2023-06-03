@@ -1,10 +1,14 @@
 Package: OrdPower
 Type: Package
-Title: OrdPower
+Title: Power Analysis and Sample Size Planning for Longitudinal Data
 Version: 0.1.1
-Author: Sijing Shao, Ziqian Xu, Ross Jacobucci
+Authors@R: c(person("Sijing", "Shao", role = c("aut", "cre"),
+                     email = "sshao2@nd.edu"),
+              person("Ziqian", "Xu", role = "aut"),
+              person("Ross", "Jacobucci", role = "aut"))
+Author: Sijing Shao [aut, cre], Ziqian Xu [aut], Ross Jacobucci [aut]
 Maintainer: Sijing Shao <sshao2@nd.edu>
-Description: This package provides the pipelines for power analysis of longitudinal models with ordinal outcome variables using a simulation-based approach. Users can specify different sample sizes, timepoints, skewness of effects etc. when performing power analysis.
+Description: Provides the pipelines for power analysis of longitudinal models with ordinal outcome variables using a simulation-based approach. Users can specify different sample sizes, timepoints, skewness of effects etc. when performing power analysis.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

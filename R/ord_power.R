@@ -25,6 +25,7 @@
 #' @importFrom stats rnorm runif
 #' @export
 #' @examples
+#' \donttest{
 #' ord_power(n = 5,
 #' numSample = 35,
 #' numAssess = 73,
@@ -37,6 +38,7 @@
 #' gamma_02_sd = 0.13,
 #' Compliance = 1,
 #' reps=10)
+#' }
 ord_power <- function(n,
                       numSample,
                       numAssess,

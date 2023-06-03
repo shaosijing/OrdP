@@ -19,6 +19,7 @@
 #' @return the estimated cross-lag coefficient, its corresponding p-value and whether an error (2) or warning (1) message is produced
 #' @export
 #' @examples
+#' \donttest{
 #' get_param(n = 5,
 #' numSample = 35,
 #' numAssess = 73,
@@ -30,6 +31,7 @@
 #' gamma_01_sd = 0.591,
 #' gamma_02_sd = 0.13,
 #' Compliance = 1)
+#' }
 get_param <- function(n,
                     numSample,
                     numAssess,
